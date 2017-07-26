@@ -50,13 +50,10 @@ class IPFactory:
         conn = mdb.connect(cfg.host, cfg.user, cfg.passwd)
         cursor = conn.cursor()
         try:
-            cursor.execute(drop_db_str)
-            cursor.execute(create_db_str)
-            cursor.execute(use_db_str)
-            cursor.execute(create_table_str)
-            conn.commit()
+            conn = mdb.connect(cfg.host, cfg.user, cfg.passwd)
+            cursor = conn.cursor()
         except OSError:
-            print "无法创建数据库！"
+            print("无法连接数据库！")
         finally:
             cursor.close()
             conn.close()
@@ -93,7 +90,7 @@ class IPFactory:
                     # 存储
                     ip_list.append(full_ip)
         except Exception as e:
-            print 'get proxies error: ', e
+            print('get proxies error: ', e)
 
         return ip_list
 
@@ -176,11 +173,11 @@ class IPFactory:
                 end = time.time()
                 # 判断是否可用
                 if r.text is not None:
-                    print 'succeed: ' + p + '\t' + " in " + format(end-start, '0.2f') + 's'
+                    print('succeed: ' + p + '\t' + " in " + format(end-start, '0.2f') + 's')
                     # 追加代理ip到返回的set中
                     results.add(p)
             except OSError:
-                print 'timeout:', p
+                print('timeout:', p)
 
         return results
 
@@ -190,7 +187,7 @@ class IPFactory:
         """
         # 循环检查次数
         for i in range(round):
-            print "\n>>>>>>>\tRound\t"+str(i+1)+"\t<<<<<<<<<<"
+            print("\n>>>>>>>\tRound\t"+str(i+1)+"\t<<<<<<<<<<")
             # 检查代理是否可用
             valid_ip = self.get_valid_ip(valid_ip, timeout)
             # 停一下
@@ -205,10 +202,10 @@ class IPFactory:
         将可用的ip存储进mysql数据库
         """
         if len(valid_ips) == 0:
-            print "本次没有抓到可用ip。"
+            print("本次没有抓到可用ip。")
             return
         # 连接数据库
-        print "\n>>>>>>>>>>>>>>>>>>>> 代理数据入库处理 Start  <<<<<<<<<<<<<<<<<<<<<<\n"
+        print("\n>>>>>>>>>>>>>>>>>>>> 代理数据入库处理 Start  <<<<<<<<<<<<<<<<<<<<<<\n")
         conn = mdb.connect(cfg.host, cfg.user, cfg.passwd, cfg.DB_NAME)
         cursor = conn.cursor()
         try:
@@ -224,18 +221,18 @@ class IPFactory:
 
                     # 输出入库状态
                     if n:
-                        print datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" "+item+" 插入成功。\n"
+                        print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" "+item+" 插入成功。\n")
                     else:
-                        print datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" "+item+" 插入失败。\n"
+                        print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" "+item+" 插入失败。\n")
 
                 else:
-                    print datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" "+ item +" 已存在。\n"
+                    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" "+ item +" 已存在。\n")
         except Exception as e:
-            print "入库失败：" + str(e)
+            print("入库失败：" + str(e))
         finally:
             cursor.close()
             conn.close()
-        print "\n>>>>>>>>>>>>>>>>>>>> 代理数据入库处理 End  <<<<<<<<<<<<<<<<<<<<<<\n"
+        print("\n>>>>>>>>>>>>>>>>>>>> 代理数据入库处理 End  <<<<<<<<<<<<<<<<<<<<<<\n")
 
     def get_proxies(self):
         ip_list = []
@@ -262,7 +259,7 @@ class IPFactory:
                 self.save_to_db(valid_ips)
                 ip_list.extend(valid_ips)
         except Exception as e:
-            print "从数据库获取ip失败！"
+            print("从数据库获取ip失败！")
         finally:
             cursor.close()
             conn.close()
