@@ -29,3 +29,6 @@ TABLE_NAME = 'baiducrawler'
 
 # 数据库字符
 charset = 'utf8'
+
+#文件存放路径
+path = "D:\\"

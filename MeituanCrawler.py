@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
-import sys
 import requests
-import random
-import ip_pool
-
+import re
+import config
+import os
+import time
 
 def main():
     download_html()
@@ -21,17 +21,25 @@ def download_html():
 
 
     # 抓取数据内容
-    web_content = requests.get("http://waimai.meituan.com/restaurant/144813147278623122",headers=headers,  timeout=4)
-
+    web_content = requests.get("http://waimai.meituan.com/restaurant/144813147279212946",headers=headers,  timeout=4)
     print(web_content.text)
+    pharm_name = html_parser(web_content.text)
+    print(pharm_name)
+    timestamp = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    if(os.path.exists(config.path + "file") == false ):
+        print(1)
+        os.mkdir(config.path + "file")
+    print(pharm_name + "&" + timestamp + ".txt")
+    os.mknod(pharm_name + "&" + timestamp + ".txt")
+
+
 
 def html_parser(html):
 
     # 设置提取的正则表达式
-    path_pharm_name =
 
-    tree = etree.HTML(html)
-    pharm_name = "data-poiname=\".+\""
+    ret = re.findall(r'data-poiname="(.*)".*?data-poiid=',html)
+    return ret
 
 if __name__ == '__main__':
     main()
