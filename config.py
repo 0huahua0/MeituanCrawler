@@ -31,7 +31,7 @@ TABLE_NAME = 'baiducrawler'
 charset = 'utf8'
 
 #文件存放路径
-path = "D:\\"
+path = "D:\\MeiTuanCrawler"
 
 # ---------接收邮箱配置----------
 
