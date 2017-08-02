@@ -25,15 +25,19 @@ def download_html():
 
 
     # 1、抓取数据内容
-    web_content = requests.get("http://waimai.meituan.com/restaurant/144813147281506706",headers=headers,  timeout=4)
+    # http://waimai.meituan.com/search/wt3jzc9m1gmr/rt?keyword=好药师
+    web_content = requests.get("http://waimai.meituan.com/search/wt3jzc9m1gmr/rt?keyword=%E5%A5%BD%E8%8D%AF%E5%B8%88",headers=headers,  timeout=4)
 
     # 2、如果抓取失败就发邮件通知
     if(web_content.status_code == 403 or web_content.status_code == 404):
         # sd.sendmail("美团外卖马沧湖店网页抓取失败.报错：" + str(web_content.status_code))
         pass
     else:
+        # 先从搜索页面获取详情页的动态url
+        getUrl = "http://waimai.meituan.com/restaurant/" + re.findall(r'/restaurant/(\d+)"',web_content.text)[0]
+        web_content1 = requests.get(getUrl, headers=headers,timeout = 4 )
         #抓取成功就存文件
-        createFile(web_content.text)
+        createFile(web_content1.text)
 
 
 def createFile(text):
@@ -43,7 +47,12 @@ def createFile(text):
 
     print(text)
     #爬取药店名
-    pharm_name = html_parser(text,"pharmName")[0]
+    pharmNameList = html_parser(text, "pharmName")
+    if(len(pharmNameList) != 0):
+        pharm_name = pharmNameList[0]
+    else:
+        print("药店名提取结果为空!")
+        exit()
 
     #制定一个文件夹
     isExists = os.path.exists(config.path)
@@ -57,10 +66,20 @@ def createFile(text):
     #创建一个文件夹
     file = open(fileUrl, 'w')
     #提取商品信息
-    content = html_parser(text,"content")[0]
+    contentList = html_parser(text,"content")
+    content = ''.join(contentList)
+    content1 = content.replace("\n","")
+    # content2 = content1.replace("\r", "")
     # 写数据
-    file.write(content)
+    if( content1 != ""):
+        file.write(content1)
+    else:
+        print("内容提取结果为空!")
+        exit()
     file.close()
+
+
+
 
 
 def html_parser(text,parameter):
@@ -70,7 +89,8 @@ def html_parser(text,parameter):
         ret = re.findall(r'data-poiname="(.*)".*?data-poiid=',text)
     elif(parameter == "content"):
 
-        ret = re.findall(r'<script type="text/template" id=".*?">(.*?)</script>',text)
+        # id = "foodcontext-\d+"\r\n\r\n\r\n\r\n > (. *?) < / script >
+        ret = re.findall(r'<script type="text/template" id="foodcontext-\d+">\r\n\r\n\r\n\r\n\r\n(.*?)</script>',text,re.S)
     else:
         ret = "正则表达式提取失败"
     return ret
