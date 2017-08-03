@@ -69,7 +69,6 @@ def createFile(text):
     contentList = html_parser(text,"content")
     content = ''.join(contentList)
     content1 = content.replace("\n","")
-    # content2 = content1.replace("\r", "")
     # 写数据
     if( content1 != ""):
         file.write(content1)
@@ -88,8 +87,6 @@ def html_parser(text,parameter):
     if(parameter == "pharmName"):
         ret = re.findall(r'data-poiname="(.*)".*?data-poiid=',text)
     elif(parameter == "content"):
-
-        # id = "foodcontext-\d+"\r\n\r\n\r\n\r\n > (. *?) < / script >
         ret = re.findall(r'<script type="text/template" id="foodcontext-\d+">\r\n\r\n\r\n\r\n\r\n(.*?)</script>',text,re.S)
     else:
         ret = "正则表达式提取失败"
