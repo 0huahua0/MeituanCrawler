@@ -36,5 +36,5 @@ path = "D:\\MeiTuanCrawler"
 # ---------接收邮箱配置----------
 
 from_addr = "594368413@qq.com"
-password = "XXX"
-to_addr = "XXX"
+password = "zhzegprkhhbnbbce"
+to_addr = "15827157135@139.com"
