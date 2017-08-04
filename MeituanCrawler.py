@@ -8,6 +8,7 @@ import os
 import time
 import sendmail as sd
 import json
+import codecs
 
 def main():
     download_html()
@@ -47,7 +48,7 @@ def createFile(text):
     #获取当前时间
     timestamp = str(time.strftime('%Y-%m-%d %H%M%S', time.localtime(time.time())))
 
-    print(text)
+
     #爬取药店名
     pharmNameList = html_parser(text, "pharmName")
     if(len(pharmNameList) != 0):
@@ -63,19 +64,23 @@ def createFile(text):
         # 如果文件夹路径不存在就创建一个
         os.mkdir(config.path)
     #
-    fileUrl = config.path + '\\' + pharm_name + "&" + timestamp + ".txt"
+    fileUrl = config.path + '\\' + pharm_name + "&" + timestamp + ".json"
 
     #创建一个文件夹
-    file = open(fileUrl, 'w')
+    file = open(fileUrl ,'w',encoding='utf-8')
     #提取商品信息
     contentList = html_parser(text,"content")
-    contentJson = [json.loads(line) for line in contentList]
-
-    content = ''.join(contentJson)
-    content1 = content.replace("\n","").replace("\t","").replace("\r","").replace("\"","")
+    #拼一个json格式的字符串
+    contentStr =  "[" + ','.join(contentList).replace("\'","\"") + "]"
+    print(contentStr)
+    # contentJson = [json.loads(line) for line in contentStr]
+    # for content in contentJson:
+    #     print(content)
+    # content = ''.join(contentJson)
+    # content1 = content.replace("\n","").replace("\t","").replace("\r","").replace("\"","")
     # 写数据
-    if( content1 != ""):
-        file.write(content1)
+    if( contentStr != ""):
+        file.write(contentStr)
     else:
         sd.sendmail("内容提取结果为空!")
         exit()
