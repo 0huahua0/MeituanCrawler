@@ -77,7 +77,7 @@ def createFile(text):
     # for content in contentJson:
     #     print(content)
     # content = ''.join(contentJson)
-    # content1 = content.replace("\n","").replace("\t","").replace("\r","").replace("\"","")
+    # content1 = content.replace("\n","").replace(  "\t","").replace("\r","").replace("\"","")
     # 写数据
     if( contentStr != ""):
         file.write(contentStr)
