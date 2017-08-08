@@ -37,4 +37,4 @@ path = "D:\\MeiTuanCrawler"
 
 from_addr = "594368413@qq.com"
 password = "XXX"
-to_addr = "15827157135@139.com"
+to_addr = "XXX"
